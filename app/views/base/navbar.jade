@@ -4,10 +4,17 @@ div.container
 			if user
 				li(class=title=="Home"?"active":undefined)
 					a(href="/") Home
-				li(class=title=="Profile"?"active":undefined)
-					a(href="/profile") #{user.local.email}
-				li(class=title=="lll"?"active":undefined)
-					a(href="/logout") Logout
+				li.dropdown(class=title=="Profile"?"active":undefined)
+					a.dropdown-toggle(data-toggle="dropdown", href="#") #{user.local.email}
+						span.caret
+					ul.dropdown-menu
+						li
+							a(href="/profile") Profile
+						li.divider
+						li
+							a(href="/logout") Logout
+		
 		h3 
 			span.fa.fa-smile-o
-			|  Carson
+			| 
+			a(href="/") Carson

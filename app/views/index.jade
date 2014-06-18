@@ -2,6 +2,26 @@ extends ./base/layout
 
 block content
 	div.container
-		div.row
-			div.col-md-12
-				h1 Hello, World.
+		- if (!projects) {
+			div.row
+				div.col-md-12
+					div.alert.alert-info
+						p It doesn't look like you have any projects set up. Would you like to 
+							a(href="/projects/new") add one now?
+		- } else {
+			div.row
+				div.col-md-12
+					table.table.table-striped
+						thead
+							tr
+								th #
+								th Name
+								th Last Build
+						tbody
+							- for (var i = 0; i < projects.length; i++) {
+								tr
+									td #{projects[i].id}
+									td #{projects[i].name}
+									td #{projects[i].lastBuild}
+							- }
+		- }

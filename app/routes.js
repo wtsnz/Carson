@@ -12,6 +12,11 @@ module.exports = function(app, passport, express) {
         });
     });
 
+
+    //
+    //  User Routes
+    //
+
     var userController = require('./controllers/userController')
 
     app.get('/login', userController.getLogin)
@@ -37,7 +42,7 @@ module.exports = function(app, passport, express) {
         });
     });
 
-    app.use('/api', router);
+    app.use('/api/v1', router);
 
     /// catch 404 and forward to error handler
     app.use(function(req, res, next) {
