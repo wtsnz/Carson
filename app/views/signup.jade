@@ -1,0 +1,25 @@
+extends ./base/layout
+
+block content
+	div.container
+		div.col-sm-6.col-sm-offset-3
+			h1
+				span.fa.fa-sign-in
+				|  Signup
+
+			if (errors.length > 0)
+				- for (var i = 0; i < errors.length; i++) {
+					div.alert.alert-danger #{errors[i].msg}
+				- }
+
+			if (message.length > 0)
+				div.alert.alert-danger #{message}
+
+			form.form-signin(action="/signup", method="post")
+				div.form-group
+					label Email
+					input.form-control(type="text", name="email", placeholder="Email", required autofocus)
+				div.form-group
+					label Password
+					input.form-control(type="password", name="password", placeholder="Password", required autofocus)
+				button.btn.btn-warning.btn-lg(type="submit") Signup

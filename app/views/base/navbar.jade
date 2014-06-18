@@ -1,0 +1,13 @@
+div.container
+	div.header
+		ul.nav.nav-pills.pull-right
+			if user
+				li(class=title=="Home"?"active":undefined)
+					a(href="/") Home
+				li(class=title=="Profile"?"active":undefined)
+					a(href="/profile") #{user.local.email}
+				li(class=title=="lll"?"active":undefined)
+					a(href="/logout") Logout
+		h3 
+			span.fa.fa-smile-o
+			|  Carson

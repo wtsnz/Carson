@@ -1,0 +1,7 @@
+extends ./base/layout
+
+block content
+	div.container
+		h1 #{message}
+		h2 #{error.message}
+		pre #{error.stack}
