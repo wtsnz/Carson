@@ -5,23 +5,30 @@ block content
 		- if (!projects) {
 			div.row
 				div.col-md-12
-					div.alert.alert-info
-						p It doesn't look like you have any projects set up. Would you like to 
-							a(href="/projects/new") add one now?
+					div.alert.alert-info(style="overflow:hidden")
+						// Hacky
+						p.pull-left(style="line-height:35px;") It doesn't look like you have any projects set up.
+						a(href="/projects/new")
+							button.btn.btn-info.pull-right Create new Project
+							
+							
 		- } else {
 			div.row
 				div.col-md-12
-					table.table.table-striped
-						thead
-							tr
-								th #
-								th Name
-								th Last Build
-						tbody
-							- for (var i = 0; i < projects.length; i++) {
-								tr
-									td #{projects[i].id}
-									td #{projects[i].name}
-									td #{projects[i].lastBuild}
-							- }
+					h1 Projects
+						a(href="/projects/new")
+							button.btn.btn-info.pull-right Create new Project
+			hr
+			div.row
+				div.col-md-12
+					ul.projectlist
+						- for (var i = 0; i < projects.length; i++) {
+							li
+								span.projectlist-icon
+									span.fa.fa-cube.fa-2x
+								h3 
+									a(href="/projects/#{projects[i].slug}") #{projects[i].name}
+								p #{projects[i].repository}
+								p #{projects[i].slug}
+						- }
 		- }

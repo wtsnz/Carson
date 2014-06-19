@@ -1,0 +1,39 @@
+extends /base/layout
+
+block content
+	div.container
+		div.row
+			div.col-sm-12
+
+				h1
+					span.fa.fa-cube
+					|  New Project
+		hr
+		div.row
+			div.col-sm-12
+
+				if (errors.length > 0)
+					- for (var i = 0; i < errors.length; i++) {
+						div.alert.alert-danger #{errors[i].msg}
+					- }
+
+				if (message.length > 0)
+						div.alert.alert-danger #{message}
+				div.panel.panel-default
+
+					div.panel-body
+						form.form-signin(action="", method="post")
+							div.form-group
+								label Project Name
+								input.form-control(type="text", name="name", placeholder="Project Name", required autofocus)
+								span.help-block A unique name for this project. 
+							div.form-group
+								label Git Repository
+								input.form-control(type="text", name="repository", placeholder="Repository", required autofocus)
+								span.help-block Ensure that the computer running Carson has the correct permissions to access the repository using git.
+							div.form-group
+								label Configuration
+								textarea.form-control(name="configuration", placeholder="Configuration", required autofocus, rows="10")
+								span.help-block Enter your project's Carson configuration here
+							button.btn.btn-warning(type="submit") Create
+

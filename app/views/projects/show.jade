@@ -1,0 +1,84 @@
+extends /base/layout
+
+block content
+	div.container
+		div.row
+			div.col-sm-12
+				h1 #{project.name}
+
+		if (errors.length > 0)
+			- for (var i = 0; i < errors.length; i++) {
+				div.alert.alert-danger #{errors[i].msg}
+			- }
+
+		div.row
+			div.col-sm-12
+				ul.nav.nav-tabs
+					li.pull-right
+						a(href="#settings", data-toggle="tab") 
+							span.fa.fa-cogs
+								|  Settings
+					li.active.pull-right
+						a(href="#builds", data-toggle="tab")
+							span.fa.fa-building
+								|  Builds
+		div.tab-content
+			div.tab-pane.active(id="builds")
+				div.row
+					div.col-sm-12
+						p Builds
+			div.tab-pane(id="settings")
+				div.row
+					div.col-sm-12
+				div.panel.panel-default
+					div.panel-heading
+						h5 Settings
+					div.panel-body
+						form.form-signin(action="", method="post")
+							div.form-group
+								label Project Name
+								input.form-control(type="text", name="name", placeholder="Project Name", required autofocus, value="#{project.name}")
+								span.help-block A unique name for this project. 
+							div.form-group
+								label Git Repository
+								input.form-control(type="text", name="repository", placeholder="Repository", required autofocus, value="#{project.repository}")
+								span.help-block Ensure that the computer running Carson has the correct permissions to access the repository using git.
+							div.form-group
+								label Configuration
+								textarea.form-control(name="configuration", placeholder="Configuration", required autofocus, rows="10") #{project.configuration}
+								span.help-block Enter your project's Carson configuration here
+							button.btn.btn-warning(type="submit") Save Changes
+
+				div.panel.panel-default
+					div.panel-heading
+						h5 Danger Zone
+					div.panel-body
+						form.form-signin.form-inline(action="/projects/#{project.slug}/delete", method="post")
+							div.form-group
+								label Delete this project
+								p This will delete all the builds and everything to do with this project
+							button.btn.btn-danger.pull-right(type="submit") Delete project
+
+
+block scripts
+	script.
+			$('#myTab a').click(function (e) {
+				e.preventDefault()
+				$(this).tab('show')
+			})
+//					div.pull-right
+//						button.btn.btn-info.pull-right Create new Project
+		hr
+		div.row
+			div.col-sm-12
+
+				if (errors.length > 0)
+					- for (var i = 0; i < errors.length; i++) {
+						div.alert.alert-danger #{errors[i].msg}
+					- }
+
+				if (message.length > 0)
+						div.alert.alert-danger #{message}
+
+				p Showing Project
+

@@ -73,3 +73,21 @@ body {
     border-bottom: 0;
   }
 }
+
+.projectlist > li {
+  position: relative;
+  min-height: 66px;
+  padding-left: 15px;
+  padding-bottom: 20px;
+  margin: 0 0 20px;
+  list-style: none;
+  border-bottom: 1px solid #eee;
+}
+
+.projectlist .projectlist-icon {
+  float: left;
+  margin-left: -45px;
+  text-align: center;
+  width: 35px;
+  color: #bbb;
+}

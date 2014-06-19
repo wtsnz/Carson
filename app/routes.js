@@ -1,3 +1,5 @@
+var Project = require('./models/project');
+
 module.exports = function(app, passport, express) {
 
 
@@ -6,10 +8,17 @@ module.exports = function(app, passport, express) {
     //
 
     app.get('/', ensureLoggedIn, function(req, res) {
-        res.render('index', {
-            user: req.user,
-            title: "Home"
-        });
+
+        Project.find()
+            .sort('-updated_at')
+            .exec(function(err, projects) {
+
+                res.render('index', {
+                    user: req.user,
+                    title: "Home",
+                    projects: projects
+                });
+            });
     });
 
 
@@ -29,6 +38,20 @@ module.exports = function(app, passport, express) {
 
     app.get('/logout', userController.logout)
 
+
+    //
+    //  Project Routes
+    //
+    var projectController = require('./controllers/projectController')
+    var projectsRouter = express.Router();
+    projectsRouter.get('/new', projectController.getNewProject)
+    projectsRouter.post('/new', projectController.postNewProject)
+
+    projectsRouter.get('/', projectController.index)
+    projectsRouter.get('/:projectSlug', projectController.show)
+    projectsRouter.post('/:projectSlug', projectController.update)
+
+    app.use('/projects', projectsRouter);
 
     //
     //  API Routes

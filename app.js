@@ -35,6 +35,7 @@ require('./config/passport')(passport);
 {
     app.set('views', path.join(__dirname, 'app/views'));
     app.set('view engine', 'jade');
+    app.locals.basedir = path.join(__dirname, 'app/views');
 
     app.use(favicon());
     app.use(logger('dev'));
