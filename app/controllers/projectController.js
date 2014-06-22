@@ -82,7 +82,6 @@ module.exports.show = function(req, res) {
         })
             .sort('-createdAt')
             .exec(function(err, builds) {
-                console.log(builds);
                 return res.render('projects/show', {
                     message: req.flash('loginMessage'),
                     errors: req.flash('errors'),

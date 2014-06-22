@@ -10,7 +10,7 @@ module.exports = function(app, passport, express) {
     app.get('/', ensureLoggedIn, function(req, res) {
 
         Project.find()
-            .sort('-updated_at')
+            .sort('-createdAt')
             .exec(function(err, projects) {
 
                 res.render('index', {
@@ -51,7 +51,7 @@ module.exports = function(app, passport, express) {
 
     var buildController = require('./controllers/buildController')
     var projectController = require('./controllers/projectController')
-    
+
     var projectsRouter = express.Router();
     projectsRouter.get('/new', projectController.getNewProject)
     projectsRouter.post('/new', projectController.postNewProject)

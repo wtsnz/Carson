@@ -4,6 +4,10 @@ block content
 	div.container
 		.page-header
 			h1 #{project.name}
+			a(href="/projects/#{project.slug}/build")
+				button.btn.btn-primary
+					span.fa.fa-building 
+					|  Build now
 		
 		if (errors.length > 0)
 			div.row
@@ -53,13 +57,13 @@ block content
 			div.tab-pane(id="settings").project-tab-pane
 				div.panel.panel-default
 					div.panel-heading
-						h5 Settings
+						h5 Project Settings
 					div.panel-body
 						form.form-signin(action="", method="post")
 							div.form-group
 								label Project Name
 								input.form-control(type="text", name="name", placeholder="Project Name", required autofocus, value="#{project.name}")
-								span.help-block A unique name for this project. 
+								span.help-block A unique name for this project.
 							div.form-group
 								label Git Repository
 								input.form-control(type="text", name="repository", placeholder="Repository", required autofocus, value="#{project.repository}")
@@ -69,7 +73,31 @@ block content
 								textarea.form-control(name="configuration", placeholder="Configuration", required autofocus, rows="10") #{project.configuration}
 								span.help-block Enter your project's Carson configuration here
 							button.btn.btn-warning(type="submit") Save Changes
-
+				div.panel.panel-default
+					div.panel-heading
+						h5 Git Deployment
+					div.panel-body
+						form.form-signin(action="", method="post")
+							div.form-group
+								label Build Branches
+								input.form-control(type="text", name="name", placeholder="deploy", required autofocus, value="deploy")
+								span.help-block Comma deliminated list of branches to build when Carson receives a POST request from Bitbucket
+				div.panel.panel-default
+					div.panel-heading
+						h5 Post Build Release
+					div.panel-body
+						form.form-signin(action="", method="post")
+							div.form-group
+								label Enable Testflight Upload
+								.checkbox
+									label
+										input(type="checkbox", name="enableTestflightUpload", value="enableTestflightUpload")
+									| Upload to Testflight on successful archive
+									span.help-block Ensure that the computer running Carson has the correct permissions to access the repository using git.
+							div.form-group
+								label Team Token
+								input.form-control(type="text", name="name", placeholder="deploy", required autofocus, value="deploy")
+								span.help-block Comma deliminated list of branches to build when Carson receives a POST request from Bitbucket
 				div.panel.panel-default
 					div.panel-heading
 						h5 Danger Zone
