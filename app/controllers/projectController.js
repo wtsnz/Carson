@@ -1,4 +1,5 @@
 var Project = require('../models/project');
+var Build = require('../models/build');
 
 module.exports.getNewProject = function(req, res) {
 
@@ -76,13 +77,23 @@ module.exports.show = function(req, res) {
             return res.redirect('/')
         }
 
-        return res.render('projects/show', {
-            message: req.flash('loginMessage'),
-            errors: req.flash('errors'),
-            title: project.name,
-            user: req.user,
-            project: project
+        Build.find({
+            'project': project._id
         })
+            .sort('-createdAt')
+            .exec(function(err, builds) {
+                console.log(builds);
+                return res.render('projects/show', {
+                    message: req.flash('loginMessage'),
+                    errors: req.flash('errors'),
+                    title: project.name,
+                    user: req.user,
+                    project: project,
+                    builds: builds
+                })
+            });
+
+
 
     });
 }

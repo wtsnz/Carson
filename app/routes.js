@@ -49,7 +49,9 @@ module.exports = function(app, passport, express) {
     //  Project Routes
     //
 
+    var buildController = require('./controllers/buildController')
     var projectController = require('./controllers/projectController')
+    
     var projectsRouter = express.Router();
     projectsRouter.get('/new', projectController.getNewProject)
     projectsRouter.post('/new', projectController.postNewProject)
@@ -58,7 +60,13 @@ module.exports = function(app, passport, express) {
     projectsRouter.get('/:projectSlug', projectController.show)
     projectsRouter.post('/:projectSlug', projectController.update)
 
+    projectsRouter.get('/:projectSlug/build', buildController.build)
+
     app.use('/projects', projectsRouter);
+
+
+
+    // app.get('/settings', settingsController.index)
 
     //
     //  API Routes

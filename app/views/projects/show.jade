@@ -26,14 +26,30 @@ block content
 		div.tab-content.project-tabs
 			div.tab-pane.active(id="builds").project-tab-pane
 				div
-					button.btn.btn-primary
-						span.fa.fa-building 
-						|  Build now
+					a(href="/projects/#{project.slug}/build")
+						button.btn.btn-primary
+							span.fa.fa-building 
+							|  Build now
 
 				div.row
 					div.col-sm-12
+						- if (builds.length > 0) {
+						table.table.table-hover
+							thead
+								tr
+									th Date
+									th Status
+							tbody
+								- for (var i = 0; i < builds.length; i++) {
+								tr(class="#{builds[i].tableRowClass()}")
+									td #{builds[i].createdAt}
+									td #{builds[i].status}
+								- }
+						- } else {
 						div.alert.alert-info(style="overflow:hidden")
 							p.pull-left No builds
+
+						- }
 			div.tab-pane(id="settings").project-tab-pane
 				div.panel.panel-default
 					div.panel-heading
