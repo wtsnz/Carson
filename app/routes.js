@@ -38,10 +38,17 @@ module.exports = function(app, passport, express) {
 
     app.get('/logout', userController.logout)
 
+    //
+    //  User Routes
+    //
+
+    var settingsController = require('./controllers/settingsController')
+    app.get('/settings', settingsController.index)
 
     //
     //  Project Routes
     //
+
     var projectController = require('./controllers/projectController')
     var projectsRouter = express.Router();
     projectsRouter.get('/new', projectController.getNewProject)

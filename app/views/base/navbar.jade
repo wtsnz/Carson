@@ -1,18 +1,30 @@
-div.container
-	div.header
-		ul.nav.nav-pills.pull-right
+nav.navbar-default(role="navigation")
+	.container
+		.navbar-header
+			button(type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse")
+				span.sr-only Toggle navigation
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			a.navbar-brand(href="/") Carson
+
+		.collapse.navbar-collapse.navbar-ex1-collapse
+
 			if user
-				li(class=title=="Home"?"active":undefined)
-					a(href="/") Home
-				li.dropdown(class=title=="Profile"?"active":undefined)
-					a.dropdown-toggle(data-toggle="dropdown", href="#") #{user.local.email}
-						span.caret
-					ul.dropdown-menu
-						li
-							a(href="/profile") Profile
-						li.divider
-						li
-							a(href="/logout") Logout
+				ul.nav.navbar-nav.navbar-right
+					li(class=title=="Home"?"active":undefined)
+						a(href="/") Home
+					li(class=title=="Settings"?"active":undefined, data-toggle="tooltip", data-placement="bottom", title="Settings", id="navSettings")
+						a(href="/settings") 
+							span.fa.fa-cog
+					li(data-toggle="tooltip", data-placement="bottom", title="Logout", id="navLogout")
+						a(href="/logout") 
+							span.fa.fa-sign-out
+
+block scripts
+	script.
+		$(function() {
+			$('#navSettings').tooltip();
+			$('#navLogout').tooltip();
+		});
 		
-		h3 
-			a(href="/") Carson

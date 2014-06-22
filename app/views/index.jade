@@ -1,34 +1,40 @@
 extends ./base/layout
 
 block content
-	div.container
+
+	.container
+		.page-header
+			h1 Projects
+				a(href="/projects/new")
+					button.btn.btn-info.pull-right Create new Project
 		- if (!projects) {
-			div.row
-				div.col-md-12
-					div.alert.alert-info(style="overflow:hidden")
-						// Hacky
-						p.pull-left(style="line-height:35px;") It doesn't look like you have any projects set up.
-						a(href="/projects/new")
-							button.btn.btn-info.pull-right Create new Project
+		div.row
+			div.col-md-12
+				div.alert.alert-info(style="overflow:hidden")
+					// Hacky
+					p.pull-left(style="line-height:35px;") It doesn't look like you have any projects set up.
+					a(href="/projects/new")
+						button.btn.btn-info.pull-right Create new Project
 							
 							
 		- } else {
-			div.row
-				div.col-md-12
-					h1 Projects
-						a(href="/projects/new")
-							button.btn.btn-info.pull-right Create new Project
-			hr
-			div.row
-				div.col-md-12
-					ul.projectlist
-						- for (var i = 0; i < projects.length; i++) {
-							li
-								span.projectlist-icon
-									span.fa.fa-cube.fa-2x
-								h3 
-									a(href="/projects/#{projects[i].slug}") #{projects[i].name}
-								p #{projects[i].repository}
-								p #{projects[i].slug}
-						- }
+		div.row
+			div.col-md-12
+				ul.projectlist
+					- for (var i = 0; i < projects.length; i++) {
+						li
+							ul.project-stats
+								li.platform iOS
+								li.builds
+									span.fa.fa-building
+									|  234
+							span.projectlist-icon
+								span.fa.fa-cube.fa-2x
+							h3 
+								a(href="/projects/#{projects[i].slug}", titl="hghg") #{projects[i].name}
+							div.body
+								//p #{projects[i].repository}
+								//p #{projects[i].slug}
+								p.last-commit Last build commit: d0bc5eb
+					- }
 		- }

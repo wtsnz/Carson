@@ -1,0 +1,76 @@
+extends /base/layout
+
+block content
+	.container
+		.page-header
+			h1
+				span.fa.fa-cog
+				|  Settings
+		.row
+			.col-md-4
+				.panel.panel-default
+					.panel-heading
+						h5 Settings
+					.panel-body		
+						ul.nav.nav-pills.nav-stacked
+							li.active
+								a(href="#me", data-toggle="pill") My Settings
+							li
+								a(href="#users", data-toggle="pill") Manage Users
+							li
+								a(href="#configuration", data-toggle="pill") Configuration
+			.col-md-8
+				.tab-content
+					.tab-pane.active(id="me")
+						div.panel.panel-default
+							div.panel-heading
+								h5 My Settings
+							div.panel-body
+								form.form-signin(action="", method="post")
+									div.form-group
+										label Id
+										input.form-control(type="text", name="user_id", placeholder="", required autofocus, value="#{user._id}", disabled)
+									div.form-group
+										label Email Address
+										input.form-control(type="text", name="user_email", placeholder="", required autofocus, value="#{user.local.email}", disabled)
+									div.form-group
+										label Password
+										input.form-control(type="text", name="user_password", placeholder="", required autofocus, value="#{user.local.password}", disabled)
+					.tab-pane(id="users")
+						div.panel.panel-default
+							div.panel-heading
+								h5 Manage Users
+							div.panel-body
+								table.table.table-hover
+									thead
+										tr
+											th Id
+											th Email
+									tbody
+										- for (var i = 0; i < users.length; i++) {
+										tr
+											td #{users[i]._id}
+											td #{users[i].local.email}
+										- }
+										
+					.tab-pane(id="configuration")
+						div.panel.panel-default
+							div.panel-heading
+								h5 Configuration
+							div.panel-body
+								form.form-signin.form-inline(action="", method="post")
+									div.form-group
+										label Allow User Signups
+										.checkbox
+											label
+												input(type="checkbox", name="enableUserRegistration", value="enableUserRegistration")
+											| Enable the /signup page
+											span.help-block Ensure that the computer running Carson has the correct permissions to access the repository using git.
+									
+								hr
+								form.form-signin(action="", method="post")
+									div.form-group
+										label Temp directory
+										input.form-control(type="text", name="name", placeholder="Temp directory", required autofocus, value="/tmp/Carson/")
+										span.help-block The path that Carson will use to temporary directory.
+									button.btn.btn-warning(type="submit") Save Changes

@@ -2,14 +2,15 @@ extends /base/layout
 
 block content
 	div.container
-		div.row
-			div.col-sm-12
-				h1 #{project.name}
-
+		.page-header
+			h1 #{project.name}
+		
 		if (errors.length > 0)
-			- for (var i = 0; i < errors.length; i++) {
+			div.row
+				div.col-sm-12
+				- for (var i = 0; i < errors.length; i++) {
 				div.alert.alert-danger #{errors[i].msg}
-			- }
+				- }
 
 		div.row
 			div.col-sm-12
@@ -22,14 +23,18 @@ block content
 						a(href="#builds", data-toggle="tab")
 							span.fa.fa-building
 								|  Builds
-		div.tab-content
-			div.tab-pane.active(id="builds")
+		div.tab-content.project-tabs
+			div.tab-pane.active(id="builds").project-tab-pane
+				div
+					button.btn.btn-primary
+						span.fa.fa-building 
+						|  Build now
+
 				div.row
 					div.col-sm-12
-						p Builds
-			div.tab-pane(id="settings")
-				div.row
-					div.col-sm-12
+						div.alert.alert-info(style="overflow:hidden")
+							p.pull-left No builds
+			div.tab-pane(id="settings").project-tab-pane
 				div.panel.panel-default
 					div.panel-heading
 						h5 Settings
@@ -58,27 +63,3 @@ block content
 								label Delete this project
 								p This will delete all the builds and everything to do with this project
 							button.btn.btn-danger.pull-right(type="submit") Delete project
-
-
-block scripts
-	script.
-			$('#myTab a').click(function (e) {
-				e.preventDefault()
-				$(this).tab('show')
-			})
-//					div.pull-right
-//						button.btn.btn-info.pull-right Create new Project
-		hr
-		div.row
-			div.col-sm-12
-
-				if (errors.length > 0)
-					- for (var i = 0; i < errors.length; i++) {
-						div.alert.alert-danger #{errors[i].msg}
-					- }
-
-				if (message.length > 0)
-						div.alert.alert-danger #{message}
-
-				p Showing Project
-
