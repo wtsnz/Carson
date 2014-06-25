@@ -52,58 +52,82 @@ block content
 						- } else {
 						div.alert.alert-info(style="overflow:hidden")
 							p.pull-left No builds
-
 						- }
 			div.tab-pane(id="settings").project-tab-pane
-				div.panel.panel-default
-					div.panel-heading
-						h5 Project Settings
-					div.panel-body
-						form.form-signin(action="", method="post")
+				form.form-signin(action="", method="post")
+					div.panel.panel-default
+						div.panel-heading
+							h5 Project Settings
+						div.panel-body
+							
+								div.form-group
+									label Project Name
+									input.form-control(type="text", name="name", placeholder="Project Name", required autofocus, value="#{project.name}")
+									span.help-block A unique name for this project.
+								div.form-group
+									label Git Repository
+									input.form-control(type="text", name="repository", placeholder="Repository", required autofocus, value="#{project.repository}")
+									span.help-block Ensure that the computer running Carson has the correct permissions to access the repository using git.
+								div.form-group
+									label Branch
+									input.form-control(type="text", name="branch", placeholder="master" autofocus, value="#{project.branch}")
+									span.help-block The branch that will be checked out and built
+								button.btn.btn-warning(type="submit") Save Changes
+					div.panel.panel-default
+						div.panel-heading
+							h5 Build Settings
+						div.panel-body
+								div.form-group
+								label xctool build arguments
+								input.form-control(type="text", name="xctoolArgs", placeholder="auto", value="")
+								span.help-block Build arguments to pass to xctool 
+					div.panel.panel-default
+						div.panel-heading
+							h5 Archive Settings
+						div.panel-body
 							div.form-group
-								label Project Name
-								input.form-control(type="text", name="name", placeholder="Project Name", required autofocus, value="#{project.name}")
-								span.help-block A unique name for this project.
-							div.form-group
-								label Git Repository
-								input.form-control(type="text", name="repository", placeholder="Repository", required autofocus, value="#{project.repository}")
-								span.help-block Ensure that the computer running Carson has the correct permissions to access the repository using git.
-							div.form-group
-								label Configuration
-								textarea.form-control(name="configuration", placeholder="Configuration", required autofocus, rows="10") #{project.configuration}
-								span.help-block Enter your project's Carson configuration here
-							button.btn.btn-warning(type="submit") Save Changes
-				div.panel.panel-default
-					div.panel-heading
-						h5 Git Deployment
-					div.panel-body
-						form.form-signin(action="", method="post")
+								label xcrun build arguments
+								input.form-control(type="text", name="xcrunArgs", placeholder="auto", value="")
+								span.help-block Build arguments to pass to xcrun 
+					div.panel.panel-default
+						div.panel-heading
+							h5 Git Deployment
+						div.panel-body
 							div.form-group
 								label Build Branches
-								input.form-control(type="text", name="name", placeholder="deploy", required autofocus, value="deploy")
+								input.form-control(type="text", name="deploymentBranches", placeholder="deploy", value="deploy")
 								span.help-block Comma deliminated list of branches to build when Carson receives a POST request from Bitbucket
-				div.panel.panel-default
-					div.panel-heading
-						h5 Post Build Release
-					div.panel-body
-						form.form-signin(action="", method="post")
+					div.panel.panel-default
+						div.panel-heading
+							h5 Post Build Release
+						div.panel-body
 							div.form-group
-								label Enable Testflight Upload
+								label Testflight Upload
 								.checkbox
 									label
-										input(type="checkbox", name="enableTestflightUpload", value="enableTestflightUpload")
-									| Upload to Testflight on successful archive
-									span.help-block Ensure that the computer running Carson has the correct permissions to access the repository using git.
+										input(type="checkbox", name="pluginTestflightEnabled" checked=(project.plugins.testflight.enabled===true ? "checked" : undefined))
+									| Upload to Testflight upon successful archive
+									span.help-block Should Carson attempt to upload the archived .ipa to the Testflight service?
 							div.form-group
 								label Team Token
-								input.form-control(type="text", name="name", placeholder="deploy", required autofocus, value="deploy")
-								span.help-block Comma deliminated list of branches to build when Carson receives a POST request from Bitbucket
-				div.panel.panel-default
-					div.panel-heading
-						h5 Danger Zone
-					div.panel-body
-						form.form-signin.form-inline(action="/projects/#{project.slug}/delete", method="post")
+								input.form-control(type="text", name="pluginTestflightTeamToken", placeholder="Team Token", value="#{project.plugins.testflight.teamToken}")
+								span.help-block This can be found in your team settings page  
+									a(href="https://www.testflightapp.com/dashboard/team/edit/") here
 							div.form-group
-								label Delete this project
-								p This will delete all the builds and everything to do with this project
-							button.btn.btn-danger.pull-right(type="submit") Delete project
+								label API Token
+								input.form-control(type="text", name="pluginTestflightApiToken", placeholder="User Token", value="#{project.plugins.testflight.apiToken}")
+								span.help-block This can be found on your account settings page  
+									a(href="https://www.testflightapp.com/account/#api") here
+							div.form-group
+								label Distribution Lists
+								input.form-control(type="text", name="pluginTestflightDistributionLists", placeholder="Distribution Lists", value="#{project.plugins.testflight.distributionLists}")
+								span.help-block Comma deliminated distribution list names
+					div.panel.panel-default
+						div.panel-heading
+							h5 Danger Zone
+						div.panel-body
+							form.form-signin.form-inline(action="/projects/#{project.slug}/delete", method="post")
+								div.form-group
+									label Delete this project
+									p This will delete all the builds and everything to do with this project
+								button.btn.btn-danger.pull-right(type="submit") Delete project

@@ -58,13 +58,15 @@ Project.prototype.createFolders = function createFolders(callback) {
     cmd.mkdir(self.projectPath(), function(err, okay) {
         cmd.mkdir(self.repositoryPath(), function(err, okay) {
             cmd.mkdir(self.buildPath(), function(err, okay) {
-                //callback();
+                if (callback) {
+                    callback()
+                }
             });
         });
     });
 }
 
-Project.prototype.initRepository = function initRepository(callback) {
+Project.prototype.clone = function initRepository(callback) {
     Git.clone(this.projectPath(), this.repositoryFolder, this.repositoryUrl, function(err, repo) {
         console.log("Cloned Repository" + err);
         if (err) {
@@ -74,11 +76,17 @@ Project.prototype.initRepository = function initRepository(callback) {
     });
 }
 
-Project.prototype.init = function init(callback) {
+Project.prototype.checkout = function checkout(branch, callback) {
+    this.repository.checkout(branch, function() {
+        callback();
+    });
+}
+
+Project.prototype.installPods = function installPods(callback) {
 
     var self = this;
 
-    self.createFolders();
+    //self.createFolders();
 
     function setupDefaults() {
 
@@ -91,32 +99,20 @@ Project.prototype.init = function init(callback) {
         })
     }
 
-    function installPods() {
-        if (self.hasPodfile()) {
-            console.log("Podfile found. Running pod install");
-            self.podInstall(function(test) {
-                console.log("Pod install complete")
-                setupDefaults();
-            });
-        } else {
+    if (self.hasPodfile()) {
+        console.log("Podfile found. Running pod install");
+        self.podInstall(function(test) {
+            console.log("Pod install complete")
             setupDefaults();
-        }
-    }
-
-    if (self.hasRepository()) {
-        console.log("Already has .git folder");
-
-        // git pull? Checkout correct branch?
-        installPods();
-
-    } else {
-        console.log("Cloning Repository");
-        // Need to create a new repository and clone + checkout correct branch
-        self.initRepository(function(err) {
-            installPods();
         });
+    } else {
+        setupDefaults();
     }
+
+
+
 };
+
 
 // Check for Podfile
 Project.prototype.hasPodfile = function hasPodfile() {
@@ -317,22 +313,25 @@ Project.prototype.archive = function archive(callback) {
 }
 
 // Sign archive
-Project.prototype.upload = function upload(callback) {
+Project.prototype.upload = function upload(uploadPlugin, callback) {
 
     var self = this;
     // Parse the plist
 
     var projectName = this.info.project;
 
+    /*
     var TEAM_TOKEN = "fd1caf1c417868dbad53aa0fe9594173_MzkzODM3MjAxNC0wNi0xNCAyMzoxMDowOS45NTExNzA";
-    var API_TOKEN = "92a0911981aab7a97180be93508e426f_MTUwNzc1MjAxMS0wOS0wOSAwODo0NTo1MC4zNTM1MjA";
+    var PK_TEAM_TOKEN = "32aef4ec5435cc6cc725232d9c3c59e6_MzQ1MDkzMjAxNC0wMy0xNyAyMDozMTo0Ni42NDMwNzk";
+    var API_TOKEN = "92a0911981aab7a97180be3508e426f_MTUwNzc1MjAxMS0wOS0wOSAwODo0NTo1MC4zNTM1MjA";
 
     var testFlight = new TestFlight(TEAM_TOKEN, API_TOKEN, ['Internal']);
+*/
 
     var ipaOutputPath = self.buildPath() + "/" + projectName + ".ipa";
     var dsymOutputPath = self.buildPath() + "/" + projectName + ".app.dSYM.zip";
 
-    testFlight.upload(ipaOutputPath, dsymOutputPath, function(err, body) {
+    uploadPlugin.upload(ipaOutputPath, dsymOutputPath, function(err, body) {
         console.log(err + " " + body);
         callback();
     })

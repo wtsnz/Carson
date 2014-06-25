@@ -27,7 +27,7 @@ TestFlight.prototype.upload = function upload(ipaPath, dsymPath, callback) {
     form.append('team_token', options.teamToken);
     form.append('file', fs.createReadStream(options.file));
     form.append('notes', options.notes);
-    form.append('distribution_lists', options.distributionLists.join(','));
+    form.append('distribution_lists', options.distributionLists);
     form.append('notify', options.notify.toString());
     form.append('replace', options.replace.toString());
 

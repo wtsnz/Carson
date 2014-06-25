@@ -16,7 +16,8 @@ module.exports.postNewProject = function(req, res) {
     // Validate form input
     req.checkBody('name', 'Please enter a project name').notEmpty()
     req.checkBody('repository', 'Please enter a valid repository').notEmpty()
-    req.checkBody('configuration', 'Please enter a valid configuration').isJSON()
+    //req.checkBody('branch', 'Please enter a valid branch').notEmpty()
+    //req.checkBody('configuration', 'Please enter a valid configuration').isJSON()
 
     var errors = req.validationErrors();
 
@@ -24,6 +25,7 @@ module.exports.postNewProject = function(req, res) {
         req.flash('errors', errors)
         return res.redirect('/projects/new')
     };
+
 
     Project.findOne({
         'name': req.body.name
@@ -48,7 +50,8 @@ module.exports.postNewProject = function(req, res) {
             var newProject = new Project({
                 name: req.body.name,
                 repository: req.body.repository,
-                configuration: req.body.configuration
+                configuration: req.body.configuration,
+                branch: req.body.branch
             });
             // save the user
             newProject.save(function(err, project, count) {
@@ -102,7 +105,8 @@ module.exports.update = function(req, res) {
     // Validate form input
     req.checkBody('name', 'Please enter a project name').notEmpty()
     req.checkBody('repository', 'Please enter a valid repository').notEmpty()
-    req.checkBody('configuration', 'Please enter a valid configuration').isJSON()
+
+    console.log(req.body);
 
     var errors = req.validationErrors();
 
@@ -119,18 +123,26 @@ module.exports.update = function(req, res) {
             return res.redirect('/')
         }
 
-        project.name = req.body.name;
-        project.repository = req.body.repository;
-        project.configuration = req.body.configuration;
+        project.name = req.body.name
+        project.repository = req.body.repository
+        project.configuration = req.body.configuration
+        project.branch = req.body.branch
+
+        // Load Testflight Plugin details
+        if (req.body.pluginTestflightEnabled == "on") {
+            project.plugins.testflight.enabled = true;
+            project.plugins.testflight.teamToken = req.body.pluginTestflightTeamToken;
+            project.plugins.testflight.apiToken = req.body.pluginTestflightApiToken;
+            project.plugins.testflight.distributionLists = req.body.pluginTestflightDistributionLists;
+        } else {
+            project.plugins.testflight.enabled = false;
+            project.plugins.testflight.teamToken = "";
+            project.plugins.testflight.apiToken = "";
+            project.plugins.testflight.distributionLists = "";
+        }
 
         project.save(function(err, project) {
-            return res.render('projects/show', {
-                message: req.flash('loginMessage'),
-                errors: req.flash('errors'),
-                title: project.name,
-                user: req.user,
-                project: project
-            })
+            return res.redirect('/projects/' + req.params.projectSlug)
         });
     });
 }

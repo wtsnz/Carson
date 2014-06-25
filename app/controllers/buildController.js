@@ -2,7 +2,7 @@ var Project = require('../models/project');
 var Build = require('../models/build');
 
 var CarsonProject = require('../carson/project');
-
+var CarsonTestflightPlugin = require('../carson/plugins/testflight');
 
 
 module.exports.build = function(req, res) {
@@ -51,38 +51,63 @@ var buildCarsonProject = function(project, build) {
     build.status = "Cloning";
     build.save();
 
-    carsonProject.init(function(err) {
+    carsonProject.createFolders(function(err) {
 
-        console.log("Project initialized, ready to build");
-
-        build.status = "Building";
+        build.status = "Cloning";
         build.save();
 
+        carsonProject.clone(function(err) {
 
-        carsonProject.build(function(err, okay) {
-            console.log(err);
+            carsonProject.checkout("develop", function(err) {
 
-            build.status = "Archiving";
-            build.save();
-
-            carsonProject.archive(function(err, okay) {
-                console.log(err);
-
-                build.status = "Uploading";
+                build.status = "Pod Install";
                 build.save();
 
-                carsonProject.upload(function(err, okay) {
-                    console.log("done");
+                carsonProject.installPods(function(err) {
 
-                    build.status = "Completed";
+                    build.status = "Building";
                     build.save();
 
+                    carsonProject.build(function(err, okay) {
+                        console.log(err);
+
+                        build.status = "Archiving";
+                        build.save();
+
+                        carsonProject.archive(function(err, okay) {
+                            console.log(err);
+
+                            if (project.plugins.testflight.enabled == true) {
+                                build.status = "Uploading";
+                                build.save();
+
+
+                                //teamToken, apiToken, distributionLists
+                                var testflight = new CarsonTestflightPlugin(project.plugins.testflight.teamToken, project.plugins.testflight.apiToken, project.plugins.testflight.distributionLists);
+
+                                carsonProject.upload(testflight, function(err, okay) {
+                                    console.log("done");
+
+                                    build.status = "Completed";
+                                    build.save();
+
+                                });
+
+                            } else {
+
+                                console.log("Not uploading, done");
+
+                                build.status = "Completed";
+                                build.save();
+
+                            }
+
+
+                        });
+                    });
                 });
-
-
-            });
+            })
         });
-
     });
 
 };

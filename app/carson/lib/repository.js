@@ -74,20 +74,20 @@ Repository.prototype.pull = function pull(callback) {
     cmd.execute("git", params, this.local, function(out) {
 
     }, function() {
-        callback(err, commits);
+        callback(err);
     });
 };
 
 Repository.prototype.checkout = function checkout(branch, callback) {
 
-    var params = ["pull"];
+    var params = ["checkout", branch];
 
     var err = false;
 
     cmd.execute("git", params, this.local, function(out) {
 
     }, function() {
-        callback(err, commits);
+        callback(err);
     });
 };
 

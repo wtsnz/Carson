@@ -29,6 +29,10 @@ block content
 								input.form-control(type="text", name="repository", placeholder="Repository", required autofocus)
 								span.help-block Ensure that the computer running Carson has the correct permissions to access the repository using git.
 							div.form-group
+								label Branch
+								input.form-control(type="text", name="branch", placeholder="master")
+								span.help-block The branch that will be checked out and built
+							//div.form-group
 								label Configuration
 								textarea.form-control(name="configuration", placeholder="Configuration", required autofocus, rows="10")
 								span.help-block Enter your project's Carson configuration here

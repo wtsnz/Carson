@@ -5,6 +5,10 @@ var projectSchema = mongoose.Schema({
     name: String,
     slug: String,
     repository: String,
+    branch: {
+        type: String,
+        default: "master"
+    },
     configuration: String,
     createdAt: {
         type: Date,
@@ -12,9 +16,22 @@ var projectSchema = mongoose.Schema({
     },
     plugins: {
         testflight: {
-            teamToken: String,
-            userToken: String,
-            distributionLists: String
+            enabled: {
+                type: Boolean,
+                default: false
+            },
+            teamToken: {
+                type: String,
+                default: ""
+            },
+            apiToken: {
+                type: String,
+                default: ""
+            },
+            distributionLists: {
+                type: String,
+                default: ""
+            }
         }
     },
     lastBuild: {
