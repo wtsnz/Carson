@@ -36,7 +36,7 @@ module.exports.execute = function(cmd, args, path, sysout, callback) {
             var i;
 
             while ((i = buff.indexOf("\n")) > -1) {
-                sysout(buff.substring(0, i));
+                //sysout(buff.substring(0, i));
                 buff = buff.substring(i + 1);
             };
         });
@@ -48,16 +48,16 @@ module.exports.execute = function(cmd, args, path, sysout, callback) {
             var i;
 
             while ((i = buff.indexOf("\n")) > -1) {
-                sysout(buff.substring(0, i));
+                //sysout(buff.substring(0, i));
                 buff = buff.substring(i + 1);
             };
         });
 
         proc.on("close", function() {
             if (buff.length > 0) {
-                sysout(buff);
+                //sysout(buff);
             }
-
+            console.log(out);
             callback(out);
         });
     });

@@ -34,7 +34,11 @@ block content
 						button.btn.btn-primary
 							span.fa.fa-building 
 							|  Build now
-
+				div
+					a(href="/projects/#{project.slug}/test")
+						button.btn.btn-primary
+							span.fa.fa-building 
+							|  TEST
 				div.row
 					div.col-sm-12
 						- if (builds.length > 0) {
@@ -46,7 +50,8 @@ block content
 							tbody
 								- for (var i = 0; i < builds.length; i++) {
 								tr(class="#{builds[i].tableRowClass()}")
-									td #{builds[i].createdAt}
+									td
+										a(href="/projects/#{project.slug}/build/#{builds[i]._id}") #{builds[i].createdAt}
 									td #{builds[i].status}
 								- }
 						- } else {

@@ -47,7 +47,8 @@ TestFlight.prototype.upload = function upload(ipaPath, dsymPath, callback) {
             return callback(false);
         }
         console.log('Carson-Plugin-Testflight: Uploaded ' + options.file + ' to TestFlight!');
-        callback(res.body);
+
+        callback(true, res.body);
     });
 
 };

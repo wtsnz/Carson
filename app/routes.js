@@ -62,6 +62,10 @@ module.exports = function(app, passport, express) {
 
     projectsRouter.get('/:projectSlug/build', buildController.build)
 
+    projectsRouter.get('/:projectSlug/build/:buildId', buildController.show)
+
+    projectsRouter.get('/:projectSlug/test', buildController.test)
+
     app.use('/projects', projectsRouter);
 
 

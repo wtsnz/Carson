@@ -1,0 +1,23 @@
+extends /base/layout
+
+block content
+	div.container
+		.page-header
+			h1 #{project.name}
+			p Build: #{build._id}
+					
+		
+		if (errors.length > 0)
+			div.row
+				div.col-sm-12
+				- for (var i = 0; i < errors.length; i++) {
+				div.alert.alert-danger #{errors[i].msg}
+				- }
+
+		div.row
+			div.col-sm-12
+				pre #{build.output}
+				//- div.form-group
+				//- 	label Output
+				//- 	textarea.form-control(name="output", placeholder="Output", required autofocus, rows="10")
+				//- 		| #{build.output}

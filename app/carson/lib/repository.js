@@ -11,8 +11,9 @@ Repository.prototype.isRepository = function isRepository(callback) {
     var b = false;
 
     cmd.execute("git", ["rev-parse", "--is-inside-work-tree"], this.local, function(out) {
-        if (out === "true")
+        if (out === "true") {
             b = true;
+        }
     }, function() {
         callback(b);
     });
@@ -72,9 +73,9 @@ Repository.prototype.pull = function pull(callback) {
     var err = false;
 
     cmd.execute("git", params, this.local, function(out) {
-
-    }, function() {
-        callback(err);
+        // Live output
+    }, function(output) {
+        callback(err, output);
     });
 };
 
@@ -82,12 +83,14 @@ Repository.prototype.checkout = function checkout(branch, callback) {
 
     var params = ["checkout", branch];
 
+    console.log("params: " + params);
+
     var err = false;
 
     cmd.execute("git", params, this.local, function(out) {
-
-    }, function() {
-        callback(err);
+        // Live output
+    }, function(output) {
+        callback(err, output);
     });
 };
 

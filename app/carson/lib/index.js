@@ -5,7 +5,16 @@ module.exports.clone = function clone(path, folder, uri, callback) {
     var repo, error;
     callback = callback || function() {};
 
-    cmd.execute("git", ["clone", uri, folder], path, function(out) {
+    var params = ["clone", "--progress", uri, folder];
+
+    console.log("params: " + params);
+
+    var output = "";
+
+    cmd.execute("git", params, path, function(out) {
+
+        output += out;
+
         if (cmd.startsWith(out, "Cloning into")) {
             var r = out.match(/'(.*)'/g) + "";
             if (r.length > 0) {
@@ -14,7 +23,9 @@ module.exports.clone = function clone(path, folder, uri, callback) {
                 error = "Failed to clone repository.";
             }
         }
-    }, function() {
-        callback(error, repo);
+    }, function(output) {
+
+        callback(error, repo, output);
+
     });
 };

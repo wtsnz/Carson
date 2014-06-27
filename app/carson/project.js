@@ -67,18 +67,20 @@ Project.prototype.createFolders = function createFolders(callback) {
 }
 
 Project.prototype.clone = function initRepository(callback) {
-    Git.clone(this.projectPath(), this.repositoryFolder, this.repositoryUrl, function(err, repo) {
-        console.log("Cloned Repository" + err);
+    Git.clone(this.projectPath(), this.repositoryFolder, this.repositoryUrl, function(err, repo, output) {
+
+        console.log("Cloned Repository" + output);
+
         if (err) {
-            throw err;
+            throw output;
         }
-        callback();
+        callback(null, output);
     });
 }
 
 Project.prototype.checkout = function checkout(branch, callback) {
-    this.repository.checkout(branch, function() {
-        callback();
+    this.repository.checkout(branch, function(err, output) {
+        callback(err, output);
     });
 }
 
@@ -88,25 +90,25 @@ Project.prototype.installPods = function installPods(callback) {
 
     //self.createFolders();
 
-    function setupDefaults() {
+    function setupDefaults(err, output) {
 
         console.log("Looking for Workspaces + Projects");
         self.determineWorkspaceOrProject(function(err) {
             console.log("Looking for schemes");
             self.determineScheme(function(err) {
-                callback();
+                callback(err, output);
             })
         })
     }
 
     if (self.hasPodfile()) {
         console.log("Podfile found. Running pod install");
-        self.podInstall(function(test) {
+        self.podInstall(function(err, output) {
             console.log("Pod install complete")
-            setupDefaults();
+            setupDefaults(err, output);
         });
     } else {
-        setupDefaults();
+        setupDefaults(false, "No Podfile");
     }
 
 
@@ -132,10 +134,10 @@ Project.prototype.podInstall = function podInstall(callback) {
 
     cmd.execute("pod", ["install"], this.repositoryPath(), function(out) {
         if (cmd.startsWith(out, "fatal")) {
-            err = out;
+            err = true;
         }
-    }, function() {
-        callback(err);
+    }, function(output) {
+        callback(err, output);
     });
 
 }
@@ -257,10 +259,10 @@ Project.prototype.build = function build(callback) {
     var err = false;
     cmd.execute("xctool", args, this.repositoryPath(), function(out) {
         if (cmd.startsWith(out, "fatal")) {
-            err = out;
+            err = true;
         }
-    }, function() {
-        callback(err);
+    }, function(output) {
+        callback(err, output);
     });
 }
 
@@ -290,26 +292,55 @@ Project.prototype.archive = function archive(callback) {
     cmd.execute("xcrun", ["-log", "-sdk", "iphoneos", "PackageApplication", "-v", applicationPath, "-o", ipaOutputPath], self.repositoryPath(), function(out) {
         //console.log(out);
         if (cmd.startsWith(out, "fatal")) {
-            err = out;
+            err = true;
         }
-    }, function() {
+    }, function(output) {
 
-        if (!err) {
+        callback(err, output);
 
-            // Zip dSYM
-            console.log("Zipping");
-            cmd.execute("zip", ["-r", "-9", dsymOutputPath, dsymFile], dsymFolder, function(out) {
-                console.log(out);
-                if (cmd.startsWith(out, "fatal")) {
-                    err = out;
-                }
-            }, function() {
+        // if (!err) {
 
-                callback(err);
+        //     // Zip dSYM
+        //     console.log("Zipping");
+        //     cmd.execute("zip", ["-r", "-9", dsymOutputPath, dsymFile], dsymFolder, function(out) {
+        //         console.log(out);
+        //         if (cmd.startsWith(out, "fatal")) {
+        //             err = out;
+        //         }
+        //     }, function() {
 
-            });
-        };
+        //         callback(err, output);
+
+        //     });
+        // };
     });
+}
+
+// Sign archive
+Project.prototype.zip = function archive(callback) {
+
+    var projectName = this.info.project;
+
+    var dsymFolder = this.archivePath() + "/dSYMs/";
+    var dsymFile = projectName + ".app.dSYM";
+    var dsymPath = dsymFolder + dsymFile;
+
+    var ipaOutputPath = this.buildPath() + "/" + projectName + ".ipa";
+    var dsymOutputPath = this.buildPath() + "/" + projectName + ".app.dSYM.zip";
+
+    var err = false;
+
+    cmd.execute("zip", ["-r", "-9", dsymOutputPath, dsymFile], dsymFolder, function(out) {
+        console.log(out);
+        if (cmd.startsWith(out, "fatal")) {
+            err = true;
+        }
+    }, function(output) {
+
+        callback(err, output);
+
+    });
+
 }
 
 // Sign archive
@@ -333,7 +364,7 @@ Project.prototype.upload = function upload(uploadPlugin, callback) {
 
     uploadPlugin.upload(ipaOutputPath, dsymOutputPath, function(err, body) {
         console.log(err + " " + body);
-        callback();
+        callback(err, body);
     })
 }
 

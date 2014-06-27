@@ -7,7 +7,10 @@ var buildSchema = mongoose.Schema({
         type: String,
         default: "Waiting"
     },
-    output: String,
+    output: {
+        type: String,
+        default: ""
+    },
     configuration: {
         commit: String
     },
